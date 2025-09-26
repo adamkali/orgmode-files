@@ -1,0 +1,30 @@
+#+TITLE: Inbox
+#+AUTHOR: Adam Kali
+#+DATE: [2025-09-26 Thu]
+#+FILETAGS: :inbox:capture:
+#+STARTUP: overview
+
+* Inbox
+
+This is your default capture file for quick notes and todos that need to be processed later.
+
+** Quick Captures
+
+Items captured here should be regularly reviewed and moved to appropriate files.
+
+*** Processing Workflow
+1. Review inbox items daily
+2. Categorize into todos, notes, or projects
+3. Refile to appropriate org files
+4. Add dates, priorities, and tags as needed
+
+** Capture Templates Reference
+
+- =<space>oc t= - Todo item → goes to todos.org
+- =<space>oc n= - Quick note → goes to notes.org  
+- =<space>oc k= - Keybinding documentation → goes to keybindings.org
+- =<space>oc p= - Project → goes to projects.org
+
+** Recent Captures
+
+Items captured via org-capture will appear here if no specific template is used.

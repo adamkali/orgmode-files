@@ -1,0 +1,240 @@
+#+TITLE: Org-Roam Setup and Usage Guide
+#+AUTHOR: Adam Kali
+#+DATE: [2025-09-26 Thu]
+#+DESCRIPTION: Complete guide to activating and using org-roam for knowledge management
+#+TAGS: tutorial org-roam knowledge-management emacs
+#+STARTUP: overview
+
+* Org-Roam Setup and Usage Guide
+
+** What is Org-Roam?
+
+Org-roam is a knowledge management system for Emacs built on top of org-mode. It implements a "Zettelkasten" approach where you create interconnected notes that form a web of knowledge. Think of it as a personal Wikipedia where every note can link to every other note.
+
+** Installation and Activation
+
+*** Method 1: Add to Your Emacs Configuration
+Add this to your =~/.emacs.d/init.el=:
+
+#+BEGIN_SRC emacs-lisp
+(use-package org-roam
+  :ensure t
+  :custom
+  (org-roam-directory "~/orgmode/roam/")
+  (org-roam-completion-everywhere t)
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n c" . org-roam-capture)
+         ("C-c n d" . org-roam-dailies-capture-today)
+         :map org-mode-map
+         ("C-c n a" . org-roam-alias-add)
+         ("C-c n o" . org-roam-tag-add))
+  :config
+  (org-roam-setup))
+#+END_SRC
+
+*** Method 2: Manual Installation
+If org-roam isn't available on MELPA:
+
+1. Download from GitHub:
+#+BEGIN_SRC bash
+git clone https://github.com/org-roam/org-roam.git ~/.emacs.d/org-roam
+#+END_SRC
+
+2. Add to your configuration:
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/org-roam")
+(require 'org-roam)
+#+END_SRC
+
+*** Method 3: Using Straight.el
+#+BEGIN_SRC emacs-lisp
+(use-package org-roam
+  :straight t
+  :custom
+  (org-roam-directory "~/orgmode/roam/"))
+#+END_SRC
+
+** Initial Setup
+
+*** 1. Create Roam Directory
+#+BEGIN_SRC bash
+mkdir -p ~/orgmode/roam
+#+END_SRC
+
+*** 2. Initialize Database
+After installation, run:
+- =M-x org-roam-db-build-cache=
+
+This creates the SQLite database that powers org-roam's linking system.
+
+*** 3. First Run
+- =M-x org-roam-buffer-toggle= - Opens the roam buffer
+- =M-x org-roam-node-find= - Find or create your first note
+
+** Core Concepts
+
+*** Nodes
+- Every org-roam note is a "node"
+- Nodes can be entire files or specific headings
+- Each node has a unique ID
+
+*** Links
+- =[[id:abc123][Note Title]]= - Links between nodes
+- Backlinks are automatically tracked
+- Creates a web of interconnected knowledge
+
+*** Tags and Aliases
+- Tag nodes for categorization
+- Add aliases for different ways to reference the same concept
+
+** Basic Workflow
+
+*** Creating Your First Note
+1. =C-c n f= (or =M-x org-roam-node-find=)
+2. Type "My First Note"
+3. Press Enter to create
+4. Start writing your note
+
+*** Linking Notes
+1. While writing, use =C-c n i= (=org-roam-node-insert=)
+2. Type the name of an existing note or create a new one
+3. Org-roam automatically creates the link
+
+*** Viewing Connections
+1. =C-c n l= (=org-roam-buffer-toggle=) shows:
+   - Backlinks to current note
+   - Connected notes
+   - Note graph visualization
+
+** Keybindings Reference
+
+*** Global Keybindings
+| Key       | Function                 | Description              |
+|-----------+--------------------------+--------------------------|
+| =C-c n f= | org-roam-node-find      | Find/create note         |
+| =C-c n l= | org-roam-buffer-toggle  | Toggle roam buffer       |
+| =C-c n c= | org-roam-capture        | Quick capture to roam    |
+| =C-c n d= | org-roam-dailies-...    | Today's daily note       |
+
+*** Org-Mode Keybindings (when in org files)
+| Key       | Function             | Description        |
+|-----------+----------------------+--------------------|
+| =C-c n i= | org-roam-node-insert | Insert link to note |
+| =C-c n a= | org-roam-alias-add   | Add alias to note   |
+| =C-c n o= | org-roam-tag-add     | Add tag to note     |
+
+** Daily Notes
+
+Org-roam includes a daily notes feature:
+
+*** Setup Daily Notes
+#+BEGIN_SRC emacs-lisp
+(use-package org-roam-dailies
+  :bind (("C-c n d" . org-roam-dailies-capture-today)
+         ("C-c n D" . org-roam-dailies-goto-today))
+  :config
+  (setq org-roam-dailies-directory "daily/"))
+#+END_SRC
+
+*** Daily Notes Workflow
+- =C-c n d= - Create/open today's note
+- =C-c n D= - Go to today's note
+- Perfect for journaling, daily planning, meeting notes
+
+** Advanced Features
+
+*** Graph Visualization
+- =M-x org-roam-graph= - Visual graph of all notes
+- Requires Graphviz: =sudo apt install graphviz=
+- Shows connections between all your notes
+
+*** Templates
+Customize capture templates:
+#+BEGIN_SRC emacs-lisp
+(setq org-roam-capture-templates
+      '(("d" "default" plain "%?"
+         :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                            "#+title: ${title}\n")
+         :unnarrowed t)
+        ("p" "project" plain "%?"
+         :target (file+head "projects/%<%Y%m%d%H%M%S>-${slug}.org"
+                            "#+title: ${title}\n#+filetags: :project:\n")
+         :unnarrowed t)))
+#+END_SRC
+
+*** Export Integration
+Org-roam works with all org-mode export features:
+- =C-c C-e h h= - Export to HTML with links intact
+- =C-c C-e m m= - Export to Markdown
+- =C-c C-e l p= - Export to PDF
+
+** Integration with Your Current Setup
+
+*** With Your Org-Mode System
+- Keep existing =todos.org=, =notes.org=, =projects.org=
+- Use org-roam for interconnected knowledge
+- Link between regular org files and roam notes
+
+*** Recommended Directory Structure
+#+BEGIN_EXAMPLE
+~/orgmode/
+├── inbox.org
+├── todos.org  
+├── notes.org
+├── projects.org
+├── keybindings.org
+└── roam/               # 🧠 Org-roam notes
+    ├── daily/          # Daily notes
+    ├── projects/       # Project-specific notes
+    ├── concepts/       # Concept notes
+    └── org-roam.db     # Database (auto-created)
+#+END_EXAMPLE
+
+** Example Workflow: Learning a New Technology
+
+1. **Create Main Note**: =C-c n f= → "Rust Programming"
+2. **Add Subtopics**: Create linked notes for "Rust Ownership", "Rust Traits"
+3. **Connect Concepts**: Link "Rust Ownership" to "Memory Management"
+4. **Track Progress**: Link to project notes in =projects.org=
+5. **Daily Updates**: Use daily notes to track learning progress
+
+** Tips for Success
+
+*** Start Small
+- Begin with 5-10 interconnected notes
+- Focus on linking related concepts
+- Don't worry about perfect organization initially
+
+*** Regular Review
+- Use =C-c n l= to review backlinks
+- Look for connection opportunities
+- Refactor and reorganize as knowledge grows
+
+*** Integration Strategy
+- Use org-roam for evergreen knowledge
+- Keep project-specific todos in =todos.org=
+- Use roam for concepts, references, and learning notes
+
+** Troubleshooting
+
+*** Common Issues
+- **Empty roam buffer**: Make sure =org-roam-db-build-cache= has run
+- **No backlinks**: Check that notes contain proper =[[id:...]]= links
+- **Performance**: Run =org-roam-db-sync= if database seems outdated
+
+*** Database Maintenance
+- =M-x org-roam-db-build-cache= - Rebuild entire database
+- =M-x org-roam-db-sync= - Sync recent changes
+- =M-x org-roam-db-clear-all= - Clear and rebuild (last resort)
+
+** Next Steps
+
+1. **Install org-roam** using your preferred method
+2. **Create your first note** about a topic you're learning
+3. **Link to existing org files** from your roam notes
+4. **Set up daily notes** for regular knowledge capture
+5. **Explore the graph** to see connections forming
+
+Org-roam transforms your note-taking from isolated documents into a living, breathing knowledge network. Start simple and let your personal Wikipedia grow organically!

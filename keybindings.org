@@ -1,0 +1,348 @@
+#+TITLE: Emacs Keybindings Reference
+#+AUTHOR: Adam Kali
+#+DATE: [2025-09-26 Thu]
+#+DESCRIPTION: Complete reference for all configured Emacs keybindings
+#+TAGS: emacs keybindings reference documentation
+
+* Emacs Keybindings Reference
+
+This document contains all the configured keybindings for your custom Emacs setup with Evil mode, dvorak navigation, and vapor theme.
+
+** Leader Key System
+
+All leader key combinations use =<space>= as the main leader key.
+
+*** File Operations (=<space>f=)
+
+| Key       | Function                    | Description                |
+|-----------+-----------------------------+----------------------------|
+| =<space>ff= | helm-find-files            | Find files                 |
+| =<space>fr= | helm-recentf               | Recent files               |
+| =<space>fs= | save-buffer                | Save current file          |
+| =<space>fS= | write-file                 | Save as (new name)         |
+| =<space>fd= | dired                      | Open directory browser     |
+
+*** Search Operations (=<space>s=)
+
+| Key       | Function                      | Description                     |
+|-----------+-------------------------------+---------------------------------|
+| =<space>ss= | helm-occur                   | Search in current buffer        |
+| =<space>sp= | helm-projectile-grep         | Search in project               |
+| =<space>sf= | helm-projectile-find-file    | Find file in project            |
+| =<space>sb= | helm-mini                    | Search buffers                  |
+| =<space>sr= | helm-resume                  | Resume last search              |
+| =<space>sS= | lsp-ivy-workspace-symbol     | Workspace symbols (LSP)         |
+| =<space>sd= | flycheck-list-errors         | Show diagnostics                |
+| =<space>sR= | lsp-ivy-global-workspace-symbol | Global references            |
+
+*** Project Operations (=<space>p=)
+
+| Key       | Function                        | Description                |
+|-----------+---------------------------------+----------------------------|
+| =<space>pp= | helm-projectile-switch-project | Switch project             |
+| =<space>pf= | helm-projectile-find-file      | Find file in project       |
+| =<space>pb= | helm-projectile-switch-to-buffer | Switch buffer in project |
+| =<space>pr= | projectile-run-project         | Run project                |
+| =<space>pc= | projectile-compile-project     | Compile project            |
+| =<space>pt= | projectile-test-project        | Test project               |
+
+*** Buffer Operations (=<space>b=)
+
+| Key       | Function           | Description           |
+|-----------+--------------------+-----------------------|
+| =<space>bb= | helm-mini         | Switch buffer         |
+| =<space>bd= | kill-this-buffer  | Delete current buffer |
+| =<space>bn= | next-buffer       | Next buffer           |
+| =<space>bp= | previous-buffer   | Previous buffer       |
+| =<space>br= | revert-buffer     | Reload buffer         |
+
+*** Git Operations (=<space>g=)
+
+| Key       | Function      | Description    |
+|-----------+---------------+----------------|
+| =<space>gs= | magit-status | Git status     |
+| =<space>gc= | magit-commit | Git commit     |
+| =<space>gp= | magit-push   | Git push       |
+| =<space>gl= | magit-log    | Git log        |
+| =<space>gb= | magit-blame  | Git blame      |
+
+*** Window Operations (=<space>w=) - Dvorak-Aware
+
+| Key       | Function               | Description              |
+|-----------+------------------------+--------------------------|
+| =<space>wh= | evil-window-left      | Move to left window      |
+| =<space>wt= | evil-window-down      | Move to window below     |
+| =<space>wn= | evil-window-up        | Move to window above     |
+| =<space>ws= | evil-window-right     | Move to right window     |
+| =<space>wd= | delete-window         | Delete current window    |
+| =<space>wD= | delete-other-windows  | Delete other windows     |
+| =<space>wv= | split-window-right    | Vertical split           |
+| =<space>wo= | split-window-below    | Horizontal split         |
+
+*** LSP Operations (=<space>l=)
+
+**** Core Navigation
+| Key       | Function                      | Description                    |
+|-----------+-------------------------------+--------------------------------|
+| =<space>lc= | lsp-execute-code-action      | Execute code action            |
+| =<space>ld= | lsp-find-definition          | Go to definition               |
+| =<space>lD= | lsp-find-declaration         | Go to declaration              |
+| =<space>li= | lsp-find-implementation      | Go to implementation           |
+| =<space>lk= | lsp-describe-thing-at-point  | Show hover documentation       |
+| =<space>lr= | lsp-rename                   | Rename symbol                  |
+| =<space>lR= | lsp-find-references          | Find references                |
+
+**** Diagnostics
+| Key       | Function                        | Description              |
+|-----------+---------------------------------+--------------------------|
+| =<space>ls= | flycheck-previous-error        | Previous diagnostic      |
+| =<space>la= | flycheck-next-error            | Next diagnostic          |
+| =<space>le= | flycheck-list-errors           | List all errors          |
+| =<space>lE= | flycheck-explain-error-at-point | Explain current error   |
+
+**** Formatting
+| Key       | Function             | Description      |
+|-----------+----------------------+------------------|
+| =<space>lf= | lsp-format-buffer   | Format buffer    |
+| =<space>lF= | lsp-format-region   | Format region    |
+
+**** Workspace (=<space>lw=)
+| Key        | Function                       | Description              |
+|------------+--------------------------------+--------------------------|
+| =<space>lwa= | lsp-workspace-folders-add     | Add workspace folder     |
+| =<space>lwr= | lsp-workspace-folders-remove  | Remove workspace folder  |
+| =<space>lws= | lsp-workspace-symbol          | Workspace symbols        |
+| =<space>lwS= | lsp-workspace-restart         | Restart workspace        |
+
+**** UI Controls (=<space>lu=)
+| Key        | Function                        | Description               |
+|------------+---------------------------------+---------------------------|
+| =<space>lud= | lsp-ui-doc-show                | Show documentation        |
+| =<space>luD= | lsp-ui-doc-hide                | Hide documentation        |
+| =<space>lus= | lsp-ui-sideline-toggle         | Toggle sideline           |
+| =<space>luf= | lsp-ui-flycheck-list           | Flycheck list             |
+| =<space>lup= | lsp-ui-peek-find-definitions   | Peek definitions          |
+
+**** Toggle Options (=<space>lt=)
+| Key        | Function                          | Description                |
+|------------+-----------------------------------+----------------------------|
+| =<space>lts= | lsp-ui-sideline-toggle           | Toggle sideline            |
+| =<space>ltd= | lsp-ui-doc-mode                  | Toggle documentation mode  |
+| =<space>ltf= | lsp-headerline-breadcrumb-mode   | Toggle breadcrumb          |
+| =<space>ltl= | lsp-lens-mode                    | Toggle lens mode           |
+
+*** Org-Mode Operations (=<space>o=)
+
+| Key       | Function                 | Description                |
+|-----------+--------------------------+----------------------------|
+| =<space>oa= | org-agenda              | Open org agenda            |
+| =<space>oc= | org-capture             | Capture new item           |
+| =<space>ol= | org-store-link          | Store link at point        |
+| =<space>oo= | org-open-at-point       | Open link at point         |
+| =<space>ot= | org-todo                | Cycle todo state           |
+| =<space>os= | org-schedule            | Schedule item              |
+| =<space>od= | org-deadline            | Set deadline               |
+| =<space>op= | org-priority            | Set priority               |
+| =<space>oe= | org-export-dispatch     | Export menu                |
+| =<space>or= | org-refile              | Refile item                |
+| =<space>oA= | org-archive-subtree     | Archive subtree            |
+
+**** Org-Roam (=<space>or=)
+| Key        | Function                  | Description              |
+|------------+---------------------------+--------------------------|
+| =<space>orf= | org-roam-node-find       | Find roam node           |
+| =<space>ori= | org-roam-node-insert     | Insert roam node         |
+| =<space>org= | org-roam-graph           | Show roam graph          |
+| =<space>orc= | org-roam-capture         | Roam capture             |
+| =<space>orb= | org-roam-buffer-toggle   | Toggle roam buffer       |
+
+*** Debug Operations (=<space>D=)
+
+| Key       | Function                   | Description            |
+|-----------+----------------------------+------------------------|
+| =<space>Dd= | dap-debug                 | Start debugging        |
+| =<space>Db= | dap-breakpoint-toggle     | Toggle breakpoint      |
+| =<space>Dc= | dap-continue              | Continue execution     |
+| =<space>Dn= | dap-next                  | Step over              |
+| =<space>Di= | dap-step-in               | Step into              |
+| =<space>Do= | dap-step-out              | Step out               |
+| =<space>Dr= | dap-restart               | Restart debugging      |
+| =<space>Ds= | dap-stop                  | Stop debugging         |
+| =<space>Du= | dap-ui-locals             | Show local variables   |
+| =<space>De= | dap-eval-thing-at-point   | Evaluate at point      |
+
+*** Language-Specific (=<space>m=)
+
+**** Rust (=<space>mr=)
+| Key        | Function                  | Description           |
+|------------+---------------------------+-----------------------|
+| =<space>mrd= | rust-dbg-wrap-or-unwrap  | Toggle debug wrapper  |
+| =<space>mrt= | rust-test                | Run Rust tests        |
+| =<space>mra= | rust-run                 | Run Rust program      |
+| =<space>mrc= | rust-check               | Check Rust code       |
+| =<space>mrC= | rust-clippy              | Run Clippy linter     |
+
+*** Help Operations (=<space>h=)
+
+| Key       | Function             | Description            |
+|-----------+----------------------+------------------------|
+| =<space>hf= | describe-function   | Describe function      |
+| =<space>hv= | describe-variable   | Describe variable      |
+| =<space>hk= | describe-key        | Describe key binding   |
+| =<space>hm= | describe-mode       | Describe current mode  |
+| =<space>hp= | describe-package    | Describe package       |
+
+*** Dashboard Operations (=<space>d=)
+
+| Key       | Function                  | Description          |
+|-----------+---------------------------+----------------------|
+| =<space>dd= | dashboard-open           | Open dashboard       |
+| =<space>dr= | dashboard-refresh-buffer | Refresh dashboard    |
+
+*** Toggle Operations (=<space>t=)
+
+| Key       | Function                      | Description               |
+|-----------+-------------------------------+---------------------------|
+| =<space>tl= | toggle-truncate-lines        | Toggle line wrapping      |
+| =<space>tn= | display-line-numbers-mode    | Toggle line numbers       |
+| =<space>tw= | whitespace-mode              | Toggle whitespace display |
+| =<space>tf= | auto-fill-mode               | Toggle auto-fill mode     |
+
+** Evil Mode - Dvorak Navigation
+
+*** Basic Movement
+Your Emacs is configured with dvorak-friendly movement keys:
+
+| Key | Standard | Dvorak Function |
+|-----+----------+-----------------|
+| =h= | ←        | Move left       |
+| =t= | ↓        | Move down       |
+| =n= | ↑        | Move up         |
+| =s= | →        | Move right      |
+| =k= | n        | Search next     |
+
+*** Window Navigation (Ctrl + Movement)
+| Key     | Function              |
+|---------+-----------------------|
+| =C-h=   | Move to left window   |
+| =C-t=   | Move to window below  |
+| =C-n=   | Move to window above  |
+| =C-s=   | Move to right window  |
+
+*** Uppercase Mappings
+| Key | Function               |
+|-----+------------------------|
+| =T= | Join lines             |
+| =N= | Help lookup (man)      |
+| =S= | Move to bottom         |
+| =K= | Search previous        |
+
+** Global Keybindings
+
+*** Quick Access
+| Key        | Function        | Description              |
+|------------+-----------------+--------------------------|
+| =<space><space>= | helm-M-x   | Command palette          |
+| =<space>TAB=     | Last buffer | Switch to previous buffer |
+| =C-x g=          | magit-status | Git status              |
+
+** Org-Mode Specific Keybindings
+
+When in org-mode, additional keybindings are available:
+
+*** Basic Org Navigation
+| Key   | Function                | Description           |
+|-------+-------------------------+-----------------------|
+| =C-c C-n= | org-next-visible-heading | Next heading      |
+| =C-c C-p= | org-previous-visible-heading | Previous heading |
+| =C-c C-f= | org-forward-heading-same-level | Forward same level |
+| =C-c C-b= | org-backward-heading-same-level | Backward same level |
+
+*** Todo Management  
+| Key     | Function                | Description               |
+|---------+-------------------------+---------------------------|
+| =C-c C-t= | org-todo              | Cycle todo state          |
+| =C-c C-s= | org-schedule          | Schedule item             |
+| =C-c C-d= | org-deadline          | Set deadline              |
+| =C-c ,=   | org-priority          | Set priority              |
+
+*** Links and References
+| Key     | Function              | Description            |
+|---------+-----------------------+------------------------|
+| =C-c C-l= | org-insert-link      | Insert/edit link       |
+| =C-c C-o= | org-open-at-point    | Open link at point     |
+| =C-c l=   | org-store-link       | Store link             |
+
+** Capture Templates
+
+Quick capture templates available via =<space>oc=:
+
+| Key | Template  | Description                           |
+|-----+-----------+---------------------------------------|
+| =t= | Todo      | Add system-level todo                 |
+| =n= | Note      | Quick note                            |
+| =k= | Keybinding| Document new keybinding               |
+| =p= | Project   | New project entry                     |
+
+** Export Options
+
+Available via =<space>oe=:
+
+- HTML export (with syntax highlighting)
+- Markdown export (GitHub flavored)
+- Hugo export (for static sites)
+- PDF export (via LaTeX)
+- ASCII export
+
+** Org Directory Structure
+
+All org files are stored in =~/orgmode/=:
+
+- =inbox.org= - Default capture file
+- =todos.org= - System-level todos
+- =notes.org= - Quick notes
+- =keybindings.org= - This documentation
+- =projects.org= - Project tracking
+- =roam/= - Org-roam knowledge base
+
+** Status Line Information
+
+Your custom doom-modeline shows:
+
+*** Left Side
+- Vapor-blue accent bar
+- Workspace name
+- Window number  
+- Buffer info with modification status
+- Cursor position
+- Word count (text files)
+
+*** Right Side
+- LSP status with colored indicators
+- Git branch and status
+- Language version detection
+- File encoding and major mode
+- Time display
+- Battery status (laptops)
+
+** Themes and Appearance
+
+*** Vapor Theme Colors
+- Background: =#0e102d= (dark blue)
+- Foreground: =#079ef0= (bright blue)
+- Primary accent: =#352ff5= (purple-blue)
+- Secondary accent: =#fa34a1= (pink)
+- Success: =#00ccaa= (teal)
+- Warning: =#fc853f= (orange)
+- Error: =#c71e26= (red)
+
+*** Font Configuration
+- Font: Victor Mono Nerd Font Propo
+- Size: 12pt (120 height)
+- Ligatures: Enabled for programming symbols
+
+This reference document will be updated as new keybindings are added to your configuration.
+* Emacs Keybindings
+** Foo bar
+  
+  [[file:~/orgmode/org-mode-tutorial.org::*Capture Templates:][Capture Templates:]]

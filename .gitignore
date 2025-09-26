@@ -1,0 +1,14 @@
+# Ignore temporary and backup files
+*~
+\#*\#
+.#*
+*.tmp
+*.bak
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore roam database files
+roam/org-roam.db
+roam/org-roam.db.backup

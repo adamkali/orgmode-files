@@ -1,0 +1,296 @@
+#+TITLE: Complete Org-Mode Tutorial
+#+AUTHOR: Adam Kali
+#+DATE: [2025-09-26 Thu]
+#+DESCRIPTION: Comprehensive guide to using org-mode in your custom Emacs setup
+#+TAGS: tutorial org-mode productivity emacs
+#+STARTUP: overview
+
+* Complete Org-Mode Tutorial
+
+This comprehensive tutorial covers everything you need to know about using org-mode in your custom Emacs configuration.
+
+** Getting Started - Basic Workflow
+
+*** Step 1: Open Your Org Files
+From emacsclient:
+#+BEGIN_SRC bash
+emacsclient -c ~/orgmode/todos.org
+#+END_SRC
+
+Or use your keybindings:
+- *<space>ff* → Type "todos" → Enter
+
+*** Step 2: Navigate Your Org Directory
+Your setup has these files:
+#+BEGIN_EXAMPLE
+~/orgmode/
+├── inbox.org         # 📥 Default captures
+├── todos.org         # ✅ System todos
+├── notes.org         # 📝 Quick notes
+├── keybindings.org   # ⌨️  Keybinding reference
+├── projects.org      # 🚀 Project tracking
+└── roam/             # 🧠 Knowledge base (future)
+#+END_EXAMPLE
+
+** Core Org-Mode Operations
+
+*** Creating and Managing Todos
+
+**** Add a New Todo:
+1. *Quick Capture*: =<space>oc t=
+   - Type your todo
+   - Press =C-c C-c= to save
+
+2. *Direct Editing*:
+   - Open =todos.org=
+   - Type: =* TODO Learn advanced org-mode=
+   - Press Enter
+
+**** Todo States:
+Your configured states: =TODO → IN-PROGRESS → WAITING → DONE/CANCELLED=
+
+*Change states:*
+- *<space>ot* - Cycles through states
+- *C-c C-t* - Same thing (org-mode default)
+
+**** Schedule and Deadlines:
+- *<space>os* - Schedule item (=SCHEDULED: <2025-09-27 Fri>=)
+- *<space>od* - Set deadline (=DEADLINE: <2025-09-30 Mon>=)
+- *<space>op* - Set priority (=[#A]=, =[#B]=, =[#C]=)
+
+*** The Org Agenda - Your Command Center
+
+**** View Your Agenda:
+*<space>oa* - Opens agenda view showing:
+- Today's scheduled items
+- Upcoming deadlines  
+- All todos across files
+- Weekly overview
+
+**** Agenda Navigation:
+- *t* - Change todo state
+- *s* - Schedule item
+- *d* - Set deadline
+- *r* - Refresh agenda
+- *q* - Quit agenda
+
+** Capture System - Quick Notes
+
+*** Capture Templates:
+*<space>oc* + template key:
+
+| Key | Template   | Goes To           | Use For       |
+|-----+------------+-------------------+---------------|
+| *t* | Todo       | =todos.org=       | System tasks  |
+| *n* | Note       | =notes.org=       | Quick thoughts |
+| *k* | Keybinding | =keybindings.org= | Document shortcuts |
+| *p* | Project    | =projects.org=    | New projects  |
+
+*** Capture Workflow:
+1. *<space>oc t* (from anywhere in Emacs)
+2. Type: "Set up automated backups"
+3. *C-c C-c* to save
+4. Item appears in =todos.org= under "System Todos"
+
+** File Organization & Refiling
+
+*** Refile Items:
+*<space>oR* - Move current item to different file/heading
+- Shows all headings across your org files
+- Type to filter
+- Enter to move
+
+*** Archive Completed Items:
+*<space>oA* - Archive completed todos
+- Keeps files clean
+- Preserves history
+
+** Export & Sharing
+
+*** Export Menu:
+*<space>oe* opens export dispatcher:
+
+| Key   | Format   | Output                            |
+|-------+----------+-----------------------------------|
+| *h h* | HTML     | Web-ready with syntax highlighting |
+| *m m* | Markdown | GitHub-flavored markdown          |
+| *l p* | PDF      | LaTeX → PDF                       |
+| *a a* | ASCII    | Plain text                        |
+
+*** Export Workflow:
+1. Open any =.org= file
+2. *<space>oe*
+3. *h h* (for HTML)
+4. Choose destination
+5. Beautiful exported file with vapor theme colors!
+
+** Org-Mode Formatting
+
+*** Headings:
+#+BEGIN_EXAMPLE
+* Level 1 Heading     ⚡ (1.5x size)
+** Level 2 Heading    🔥 (1.3x size)  
+*** Level 3 Heading   💎 (1.2x size)
+**** Level 4 Heading  🌟 (1.1x size)
+***** Level 5 Heading ✨ (1.0x size)
+#+END_EXAMPLE
+
+*** Text Formatting:
+#+BEGIN_EXAMPLE
+*bold* /italic/ =code= ~verbatim~
+_underlined_ +strikethrough+
+#+END_EXAMPLE
+
+*** Code Blocks:
+#+BEGIN_EXAMPLE
+#+BEGIN_SRC emacs-lisp
+(message "Code blocks with syntax highlighting!")
+#+END_SRC
+#+END_EXAMPLE
+
+*** Lists:
+#+BEGIN_EXAMPLE
+- [ ] Checkbox item (todo)
+- [X] Completed checkbox
+1. Numbered list
+   - Nested item
+#+END_EXAMPLE
+
+*** Links:
+#+BEGIN_EXAMPLE
+[[file:notes.org][Link to notes]]
+[[https://orgmode.org][Org Mode Website]]
+[[file:~/projects/myfile.rs][Link to code file]]
+#+END_EXAMPLE
+
+** Daily Workflow Examples
+
+*** Morning Routine:
+1. *<space>oa* - Check today's agenda
+2. *<space>oc t* - Capture any new todos from email/meetings
+3. Review and schedule items for the day
+
+*** During Work:
+1. *<space>oc n* - Quick notes on ideas
+2. *<space>oc k* - Document new shortcuts you learn
+3. Update project progress in =projects.org=
+
+*** Evening Review:
+1. *<space>oa* - Review completed items
+2. *<space>oA* - Archive finished todos
+3. *<space>os* - Schedule tomorrow's priorities
+
+** File-Specific Features
+
+*** In =todos.org=:
+- System-level tasks
+- Scheduled items
+- Priority management
+- Archive section for completed items
+
+*** In =notes.org=:
+- Development journal
+- Learning notes
+- Ideas and inspiration
+- Resource collections
+
+*** In =projects.org=:
+- Active project tracking
+- Goals and milestones
+- Project templates
+- Technology stacks
+
+*** In =keybindings.org=:
+- Complete reference
+- Searchable with =C-s=
+- Organized by category
+- Examples and descriptions
+
+** Visual Features
+
+*** Your Vapor Theme Integration:
+- *Headings*: Graduated sizes with beautiful colors
+- *Todo states*: Color-coded (orange TODO, blue IN-PROGRESS, etc.)
+- *Syntax highlighting*: In code blocks
+- *Bullets*: Emoji bullets (⚡🔥💎🌟✨💫⭐)
+
+*** Clean Appearance:
+- *Hidden markup*: =*bold*= shows as *bold*
+- *Inline images*: Display directly in buffer
+- *Pretty entities*: =\alpha= → α
+- *Fontified blocks*: Quotes and code highlighted
+
+** Pro Tips
+
+*** Navigation:
+- *C-c C-n/p* - Next/previous heading
+- *C-c C-f/b* - Forward/backward same level
+- *TAB* - Cycle heading visibility
+- *S-TAB* - Cycle entire file visibility
+
+*** Editing:
+- *M-RET* - New heading/list item
+- *M-LEFT/RIGHT* - Promote/demote heading
+- *M-UP/DOWN* - Move heading up/down
+- *C-c C-l* - Insert/edit links
+
+*** Time Management:
+- *C-c .* - Insert timestamp
+- *C-c !* - Insert inactive timestamp
+- *C-c C-x C-i* - Clock in (time tracking)
+- *C-c C-x C-o* - Clock out
+
+** Complete Keybinding Reference
+
+*** Org-Mode Operations (<space>o)
+| Key       | Function              | Description         |
+|-----------+-----------------------+---------------------|
+| =<space>oa= | org-agenda           | Open org agenda     |
+| =<space>oc= | org-capture          | Capture new item    |
+| =<space>ol= | org-store-link       | Store link at point |
+| =<space>oo= | org-open-at-point    | Open link at point  |
+| =<space>ot= | org-todo             | Cycle todo state    |
+| =<space>os= | org-schedule         | Schedule item       |
+| =<space>od= | org-deadline         | Set deadline        |
+| =<space>op= | org-priority         | Set priority        |
+| =<space>oe= | org-export-dispatch  | Export menu         |
+| =<space>oR= | org-refile           | Refile item         |
+| =<space>oA= | org-archive-subtree  | Archive subtree     |
+
+*** Org-Mode Specific Keybindings
+
+When in org-mode, additional keybindings are available:
+
+**** Basic Org Navigation
+| Key     | Function                           | Description        |
+|---------+------------------------------------+--------------------|
+| =C-c C-n= | org-next-visible-heading         | Next heading       |
+| =C-c C-p= | org-previous-visible-heading     | Previous heading   |
+| =C-c C-f= | org-forward-heading-same-level   | Forward same level |
+| =C-c C-b= | org-backward-heading-same-level  | Backward same level |
+
+**** Todo Management  
+| Key     | Function         | Description          |
+|---------+------------------+----------------------|
+| =C-c C-t= | org-todo        | Cycle todo state     |
+| =C-c C-s= | org-schedule    | Schedule item        |
+| =C-c C-d= | org-deadline    | Set deadline         |
+| =C-c ,=   | org-priority    | Set priority         |
+
+**** Links and References
+| Key     | Function            | Description        |
+|---------+---------------------+--------------------|
+| =C-c C-l= | org-insert-link    | Insert/edit link   |
+| =C-c C-o= | org-open-at-point  | Open link at point |
+| =C-c l=   | org-store-link     | Store link         |
+
+** Try It Out!
+
+*** Immediate Actions:
+1. *<space>oa* - Look at your agenda
+2. *<space>oc t* - Add "Learn org-mode navigation"
+3. *<space>ot* - Change it to IN-PROGRESS
+4. *<space>os* - Schedule it for today
+5. *Open* =~/orgmode/notes.org= and explore
+
+Your org-mode system is incredibly powerful and will become second nature with practice. The capture system alone will revolutionize how you handle information!

@@ -1,0 +1,175 @@
+#+TITLE: Projects
+#+AUTHOR: Adam Kali
+#+DATE: [2025-09-26 Thu]
+#+FILETAGS: :projects:
+#+STARTUP: overview
+
+* Active Projects
+
+** Development Projects :PROJECT:
+
+*** Emacs Configuration Enhancement :emacs:
+    :PROPERTIES:
+    :PROJECT_STATUS: IN-PROGRESS
+    :STARTED: [2025-09-26 Thu]
+    :END:
+    
+    Complete custom Emacs configuration with vapor theme and comprehensive features.
+    
+**** Goals
+     - [X] Replace broken Doom Emacs with custom config
+     - [X] Implement vapor theme matching Neovim
+     - [X] Set up comprehensive LSP support
+     - [X] Configure dvorak-centric navigation
+     - [X] Create beautiful status line
+     - [X] Establish org-mode productivity system
+     - [ ] Add email integration
+     - [ ] Configure advanced org-roam workflows
+     - [ ] Set up automated backups
+
+**** Key Technologies
+     - Emacs Lisp configuration
+     - LSP servers for multiple languages
+     - Org-mode for productivity
+     - Git integration with Magit
+     - WSL integration for Windows
+
+*** Go CLI Tools :golang:
+    :PROPERTIES:
+    :PROJECT_STATUS: ACTIVE
+    :END:
+    
+    Development of various CLI tools using Go with Bubble Tea for TUI interfaces.
+    
+**** Current Tools
+     - =egg_cli= - CLI tool with interactive TUI
+     - =mindscape= - Web application with database integration
+     - =ogier= - Additional Go project
+
+*** Rust Game Development :rust:gamedev:
+    :PROPERTIES:
+    :PROJECT_STATUS: EXPERIMENTAL
+    :END:
+    
+    Exploring game development with Rust.
+    
+**** Projects
+     - =jumpboy= - Game project in development
+     - Template applications for Rust projects
+
+*** .NET Enterprise Development :dotnet:csharp:
+    :PROPERTIES:
+    :PROJECT_STATUS: ACTIVE
+    :END:
+    
+    Large enterprise project - eFileMadeEasy job management system.
+    
+**** Technologies
+     - .NET 9.0
+     - Entity Framework
+     - ASP.NET Core
+     - Complex job management workflows
+
+** Learning Projects :learning:
+
+*** Elixir Exploration :elixir:
+    :PROPERTIES:
+    :PROJECT_STATUS: PLANNED
+    :END:
+    
+    Learning functional programming with Elixir and Phoenix framework.
+    
+**** Goals
+     - [ ] Complete Elixir basics
+     - [ ] Build Phoenix web application
+     - [ ] Explore OTP patterns
+     - [ ] Create LiveView project
+
+*** Gleam Language :gleam:
+    :PROPERTIES:
+    :PROJECT_STATUS: PLANNED
+    :END:
+    
+    Exploring Gleam as a type-safe language for the BEAM VM.
+    
+**** Goals
+     - [ ] Learn Gleam syntax and type system
+     - [ ] Build sample applications
+     - [ ] Compare with Elixir workflows
+
+** Data Analysis Projects :python:data:
+
+*** Comparison Plotting :matplotlib:
+    :PROPERTIES:
+    :PROJECT_STATUS: ACTIVE
+    :END:
+    
+    Data visualization project using matplotlib for comparison analysis.
+    
+**** Features
+     - Statistical plotting
+     - Interactive visualizations
+     - Data comparison tools
+
+** Infrastructure Projects :infrastructure:
+
+*** Development Environment Automation :automation:
+    :PROPERTIES:
+    :PROJECT_STATUS: IN-PROGRESS
+    :END:
+    
+**** Completed
+     - [X] Emacs daemon Windows startup automation
+     - [X] WSL integration scripts
+     - [X] Development font installation
+
+**** Planned
+     - [ ] Automated development environment setup
+     - [ ] Configuration management scripts
+     - [ ] Backup and synchronization systems
+
+* Project Templates
+
+** New Project Template :template:
+   :PROPERTIES:
+   :PROJECT_STATUS: 
+   :STARTED: 
+   :DEADLINE: 
+   :TAGS:
+   :END:
+
+*** Description
+    [Project description here]
+
+*** Goals
+    - [ ] Goal 1
+    - [ ] Goal 2  
+    - [ ] Goal 3
+
+*** Technologies
+    - Technology 1
+    - Technology 2
+
+*** Resources
+    - [[url][Resource 1]]
+    - [[url][Resource 2]]
+
+* Completed Projects
+
+** Neovim Configuration :neovim:ARCHIVE:
+   :PROPERTIES:
+   :ARCHIVE_TIME: 2025-09-26 Thu 13:48
+   :PROJECT_STATUS: COMPLETED
+   :END:
+   
+   Comprehensive Neovim configuration with vapor theme, LSP support, and custom keybindings.
+   
+*** Achievements
+    - Custom vapor colorscheme
+    - Comprehensive LSP setup for 20+ languages
+    - Telescope fuzzy finding integration
+    - Custom movement keys for dvorak
+    - Advanced plugin ecosystem
+
+*** Migration Notes
+    Successfully migrated key concepts and workflows to Emacs configuration.

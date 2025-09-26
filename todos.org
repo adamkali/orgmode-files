@@ -1,0 +1,51 @@
+#+TITLE: System Todos
+#+AUTHOR: Adam Kali
+#+DATE: [2025-09-26 Thu]
+#+FILETAGS: :todos:system:
+#+STARTUP: overview
+
+* System Todos
+
+** IN-PROGRESS Set up automated backups for orgmode directory
+   SCHEDULED: <2025-09-27 Fri>
+   - [ ] Research backup solutions
+   - [ ] Configure automatic sync
+   - [ ] Test restoration process
+
+** TODO Learn advanced org-mode features
+   - [ ] Master org-agenda workflows
+   - [ ] Set up org-roam knowledge base
+   - [ ] Configure org-babel for code execution
+   - [ ] Explore org-publish for documentation
+
+** TODO Customize Emacs further
+   - [ ] Add more language-specific configurations
+   - [ ] Set up email integration with mu4e
+   - [ ] Configure IRC client
+   - [ ] Add productivity tracking
+
+** DONE Configure comprehensive org-mode setup
+   CLOSED: [2025-09-26 Thu 13:48]
+   :PROPERTIES:
+   :ARCHIVE_TIME: 2025-09-26 Thu 13:48
+   :END:
+   - [X] Set up org directory structure
+   - [X] Configure capture templates  
+   - [X] Add export functionality
+   - [X] Create keybindings documentation
+** TODO Set up automated backups with coolify
+  
+  [[file:~/orgmode/org-mode-tutorial.org::*Capture Workflow:][Capture Workflow:]]
+* Completed Tasks
+
+** DONE Install and configure Emacs with vapor theme
+   CLOSED: [2025-09-26 Thu 12:00]
+   
+** DONE Set up LSP for all development languages
+   CLOSED: [2025-09-26 Thu 12:30]
+   
+** DONE Create beautiful status line with doom-modeline
+   CLOSED: [2025-09-26 Thu 13:00]
+
+** DONE Configure Windows startup for Emacs daemon
+   CLOSED: [2025-09-26 Thu 13:15]
