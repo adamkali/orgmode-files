@@ -182,6 +182,23 @@ All leader key combinations use =<space>= as the main leader key.
 | =<space>mrc= | rust-check               | Check Rust code       |
 | =<space>mrC= | rust-clippy              | Run Clippy linter     |
 
+*** Terminal Operations (=<space>`=)
+
+| Key          | Function                    | Description                   |
+|--------------+-----------------------------+-------------------------------|
+| =<space>``=    | vterm                      | Open vterm terminal           |
+| =<space>`v=    | vterm                      | Open vterm (vertical)         |
+| =<space>`h=    | vterm-other-window         | Open vterm in other window    |
+| =<space>`t=    | multi-vterm                | Multi-terminal manager        |
+| =<space>`n=    | multi-vterm-next           | Switch to next terminal       |
+| =<space>`p=    | multi-vterm-prev           | Switch to previous terminal   |
+| =<space>`d=    | multi-vterm-dedicated-toggle | Toggle dedicated terminal    |
+| =<space>`r=    | vterm-rename-buffer        | Rename terminal buffer        |
+| =<space>`k=    | kill-buffer                | Kill current terminal         |
+| =<space>`c=    | term                       | Open classic terminal         |
+| =<space>`e=    | eshell                     | Open EShell                   |
+| =<space>`s=    | shell                      | Open shell                    |
+
 *** Help Operations (=<space>h=)
 
 | Key       | Function             | Description            |
@@ -245,6 +262,12 @@ Your Emacs is configured with dvorak-friendly movement keys:
 | =<space><space>= | helm-M-x   | Command palette          |
 | =<space>TAB=     | Last buffer | Switch to previous buffer |
 | =C-x g=          | magit-status | Git status              |
+
+*** Terminal Quick Access
+| Key     | Function           | Description                    |
+|---------+--------------------+--------------------------------|
+| =C-`=   | vterm-toggle       | Quick toggle terminal          |
+| =C-~=   | vterm-toggle-cd    | Toggle terminal in current dir |
 
 ** Org-Mode Specific Keybindings
 
@@ -341,8 +364,50 @@ Your custom doom-modeline shows:
 - Size: 12pt (120 height)
 - Ligatures: Enabled for programming symbols
 
+** Terminal Integration
+
+*** Available Terminal Types
+
+**** VTerm
+- High-performance terminal emulator with native speed
+- Full terminal emulation including colors and special characters
+- Evil mode integration with proper cursor handling
+- Directory tracking and project awareness
+
+**** Multi-VTerm
+- Multiple terminal buffer management
+- Project-specific terminals
+- Dedicated terminal windows
+- Easy switching between terminal instances
+
+**** EShell (Enhanced)
+- Emacs-native shell with custom vapor theme prompt
+- Git integration (=g status= opens magit, =g log= opens magit-log)
+- Custom aliases: =clear=, =ff= (helm-find-files)
+- Visual command support for interactive programs
+
+**** Classic Options
+- =term= - Built-in terminal emulator
+- =shell= - Basic shell interface
+
+*** Terminal Features
+
+**** Quick Access
+- =C-`= for instant terminal toggle
+- =C-~= for terminal in current directory
+- Project-aware terminal creation
+- Dedicated terminal windows
+
+**** Integration
+- Evil mode keybindings in terminal
+- Projectile integration
+- Directory tracking
+- Buffer management with vapor theme
+
+**** EShell Enhancements
+- Custom prompt with vapor colors: =path λ= 
+- Git command shortcuts
+- History management (1000 entries)
+- Visual command handling for =htop=, =vim=, =ssh=, etc.
+
 This reference document will be updated as new keybindings are added to your configuration.
-* Emacs Keybindings
-** Foo bar
-  
-  [[file:~/orgmode/org-mode-tutorial.org::*Capture Templates:][Capture Templates:]]

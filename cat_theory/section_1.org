@@ -1,0 +1,81 @@
+#+TITLE: section_1_basics_of_haskell
+#+AUTHOR: Adam Kalinowski
+#+CREATED: 2025-04-16T12:50:46-0500
+#+UPDATED: 2025-04-22T09:48:16-0500
+#+VERSION: 1.1.1
+
+
+* The Basics of Haskell  and 1. Catagories
+  I want to learn Category theory, so what better way to learn about category theory then learning the programming language that was inspired by the field. The idea is as follows.
+** Lemma 1
+   - Haskell is the programing language for Category theory.
+   - I want to learn Haskell
+   - I want to learn category theory
+   - If i learn them concurrently and use them to solve problems:
+   -- i will be able to apply my knowlege of one to figure out another
+   -- ... profit ?
+   ---
+** Haskell  
+   What is it and why should anyone care. It is a programing puerely functional language that strictly adheres to lambda casculous
+   #+BEGIN_SRC haskell
+   main = do
+   putStrLn "Hello, everybody!"
+   putStrLn ("Please look at my favorite odd numbers: " ++ show (filter odd [10..20]))
+   #+END_SRC
+   To do this, I also had to add in the otter package to my config so that when i write some code literately in these sections i can have them  tangled into a directory of my choosing. 
+
+** 1.1 Categories 
+   - A Category $\mathcal{C}$ consists of a set of objects 
+   #+BEGIN_SRC json
+   [ a, b, c, x ]
+   #+END_SRC
+   - A catogory has some mapping from one to another, this can be an arrow which can be thought of as arrows 
+   #+BEGIN_SRC haskell
+   f x = x
+   #+END_SRC
+   ie that x is a value and f in this case is a mapping from x to x ie *an identity function*. You could even iterate over a range of functions for any of the objects with a range functions or arrows. 
+*** *\1* This then begs the Idea 
+    - say that *A* is a dimension  
+    - say that B is a dimension 
+    - Then by the very definition *f* is the morhisma map: $f|A> = |B>$ 
+
+    ---
+   When on function map F : A -> B  you can link this up as the function map G : B -> C
+   therefore for my own use i will write composition as GF : A -> C. 
+   It is also definite that 
+   - IDa : A -> A 
+   - f   : A -> B 
+   - IDb : B -> B 
+   It can be proven that for thes arbitry F 
+   - (x) IDbF = F = FIDa
+   ---
+  Let us also show that there is some idea of 
+  - f: A -> B 
+  - g: B -> C 
+  - h: A -> C  
+  ---
+Then gf = h and that the mappings gf and h commute. 
+** 1.2 Categories of structured sets 
+
+   suppose there were some 
+   #+BEGIN_SRC haskell
+   x :: List[Int]
+   x = [0.]
+   #+END_SRC
+   This object x is as structured set, so then it begs that 
+   #+BEGIN_SRC haskell
+   f :: List[Int] -> List[Int]
+   x :: List[Int]
+   x = [0.]
+   #+END_SRC
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,549 @@
+#+TITLE: Introducing: Egg.
+#+DESCRIPTION: Egg is a backend framework for Golang.
+#+AUTHOR: adamkali
+#+CATEGORIES: Egg, Golang, CLI
+#+CREATED: 2025-05-05T10:14:54-0500
+#+UPDATED: 2025-09-12T16:32:16-0500
+#+VERSION: 1.1.1
+#+DRAFT: true
+#+LEADER: Dont you just hate reinventing the wheel? Don't worry I did it for you!
+
+
+* Because I can.
+  Everyone always tells you "don't reinvent the wheel." Use existing frameworks. Don't waste time building what already exists. And they're probably right—for most people, most of the time. You aren't going to do it any better than x engineers. 
+  
+  But sometimes you need to prove to yourself (and any future potential employers) that you can actually build the wheel. Sometimes the best way to understand production-ready software is to build it yourself, exactly the way you want it to work. Sometimes problem-solving IS the point.
+  
+  One day, I was doom-scrolling on YouTube and came across a video on deploying to a VPS without Netlify or Vercel, by the one: [[\2][\1]]. And like any good developer with a chronic case of "I bet I could build that," I wanted to copy the project and try the "tutorial" for myself and deploy a service to my newly installed homelab. But more importantly, I saw an opportunity to solve my real problem: I wasn't shipping enough projects.
+  At this time, I was trying out [[\2][\1]] and fell in love with the cool features it offered that I genuinely cared about.
+  So, if I was going to create a service using the Loco framework, I wanted to make it as simple as possible. 
+  Or, more accurately: to be as simple as Vercel or Netlify.
+  So I laid out a few requirements that I felt, if not satisfied, would be a dealbreaker. 
+** Requirements.txt 
+   ~ I wanted to stop bootstrapping the same project structure over and over. You know that feeling when you have a brilliant project idea at 11 PM, but you remember you'll need to spend 3 hours setting up Docker, configuring the database, and getting auth working? Database, cache, object storage, and Auth needs to be set up from the start
+   ~ I wanted the Ruby on Rails experience but in a language I already knew and could iterate on quickly. The *opinions*. The "this is how we do things" structure that lets you jump straight to business logic. So lets focus on having rock solid opinions. (Foreshadowing)
+   ~ I wanted to deploy by pushing to main. The Vercel experience: commit, push, see your changes live. But on my homelab, because I have this perfectly good server sitting there and I want to actually use it for development and prototyping.
+   ~ I wanted all deployments automated with CI/CD, because manually deploying things in 2025 is just embarrassing.
+   ~ I want my stack to be deployed locally. If I have to end up storing this off location. Fine. I need to be able to integrat on hardware that I own.
+   ---
+  I don't want to build the plane while I'm flying it. I want the plane already built from the factory. The factory that I made myself, on the land that I built. 
+   ===
+  With all of this in mind, I started using Loco to first make sure that I could deploy a Loco-rs application to my server using the same pattern that [Dreams of Code] did in their video.
+I started by creating a new Loco-rs project and setting up the database (Postgres), cache (Redis), and S3 (MinIO) through docker-compose.
+I then used that docker-compose file to deploy these services to my home server and verify that everything was reachable from outside the network.
+And they were! Great so far...
+Now that I tested everything was working separately, I decided to create a docker-swarm.yaml to get the resilience that was talked about in the video.
+I was sure that there would be nothing an operating system container would do to make my Docker environment unable to use Docker Swarm, right?
+** Suprise, Mother f*cker. 
+   When I was setting up my server for homelab deployment, I just added the Docker package during the installation of Ubuntu 24.04 Server OS. Seemed reasonable, right? Wrong.
+   
+   Turns out using Docker Swarm on the Snap version of Docker is like trying to write to a read-only filesystem... because that's literally what happens. The Snap sandboxing makes `swarm mode` throw [ro filesystem errors](https:/*\1*t*\1*11561), and even when you work around those, the containers couldn't discover each other on the Docker network in my case. The Loco server couldn't talk to Postgres, Postgres couldn't talk to Redis, nothing worked.
+   
+   Eventually (an entire weekend), I realized I was focusing on the wrong problem entirely. I wanted to build software, not spend weekends debugging containerization. So I nuked the Snap Docker, installed Docker properly, and gave up on Swarm altogether. Sometimes the best solution is admitting you were overengineering from the start.
+   
+   Reinventing the wheel is fine, but over-engineering the axle before getting the wheel started is kind of nuts. Luckily, I wasn't giving up on creating my personal development stack .
+** Coolify 
+   After icing the Docker Swarm idea, as someone in the 99th percentile of having Neanderthal DNA, I can be sure that the feeling of discovering fire was similar to discovering Coolify. I didn't want to spend another weekend debugging infrastructure. I wanted to get a framework up and running in one night and be able to iterate that same night. Back to Google I went, this time searching for "self-hosted Vercel" because apparently I'm a glutton for punishment.
+   
+   That's when I discovered [[\2][\1]], and it seemed like a match made in heaven. Here was a tool that promised the Vercel experience but on my own hardware. I dove into the documentation and found everything I didn't know I needed: a REST API to control deployments, preview deployments for different branches, and their magic DNS tool that handled all the subdomain routing I would have otherwise fought with nginx for hours to configure.
+   
+   But the real kicker? It embodied the spirit of free as in libre. Complete control over my deployments, the ability to dictate environments, and I could swap out services with a simple click. No vendor lock-in, no usage limits, just my server doing exactly what I wanted it to do.
+   
+   This solved multiple problems at once: the CI/CD pipeline I needed, the one-click deployment experience I craved, and it let me focus on building the actual framework instead of fighting with container orchestration. Perfect. Now to test if my bet with Loco-rs would pay off. 
+** Let's get Rusty
+   It did not. Look, I have massive respect for what Rust does and the problems it solves. But my grug brain wanted to write more code, not smarter code. I wanted to jam out features, not spend hours satisfying the borrow checker for simple changes.
+   
+   After about a month of giving Loco-rs a good college try, I found that I was hitting a roadblock every time I opened Neovim. Not because I had no motivation or didn't understand the language, but because development velocity in Rust felt like trying to improvise jazz while Melkor from the Silmarillion is standing in the back playing death metal at -9000 dB.
+   
+   The adage "You fight the borrow checker, not the compiler" really is true. I could implement traits for data transformation just fine. The problem came whenever I wanted to make simple changes—change a model field, update a response type, any sort of editing that should take 30 seconds but suddenly requires satisfying lifetimes and ownership three levels deep. 
+   Want to change a `String` field to `&str`? Sure, seems simple enough. But that innocent change cascades into 40 compiler errors because now you need lifetimes, and those lifetimes need to satisfy Sync + Send traits somewhere up the framework chain. What should be a 30-second change becomes an hour-long archaeological dig through the type system.
+   
+   And the real kicker? You don't find out until after the compile finishes. For my use case, that was the death knell. I timed it against my company's production Create React App build to see what I was subjecting myself to:
+   #+BEGIN_SRC bash
+   Rust clean builds: 71 seconds
+   eFileMadeEasy's Create React App: 58 seconds
+   #+END_SRC
+   
+   So Rust was actually *slower* than our JavaScript build pipeline, and that's before we talk about release builds that took nearly 2 minutes.
+   When you add CI/CD into the mix—pushing changes to GitHub, waiting for Docker builds, discovering you set the server to `localhost` instead of `0.0.0.0`—a simple mistake could exponentially increase deployment time. The whole point of this experiment was high-velocity development and shipping fast. Instead, I was spending more time fighting the borrow checker than writing business logic.
+ 
+** I Just Wanted to Be Louis Armstrong
+   Here's the thing: I wanted to improvise, jam out features, and iterate quickly. I want to write the most correct code. I want to write code that works and ships fast. 
+   
+   Rust is incredible at what it does, but what it does well (memory safety, performance, correctness) wasn't solving my problem (development velocity for web apps). I needed something that let me play jazz, not death metal. Something that prioritized iteration speed over compile-time guarantees. Something where changing a struct field didn't require an hour-long archaeological dig through the type system.
+   To do this, I thought, well why not Go? 
+   Go holds a special place in my heart, as I have always felt an affinity with the simplicity it has on top of how crazy fast you can iterate with the language.
+   Especially when you are developing a web app.
+   So my goal was to create a web app, but I decided to do something that in hindsight was risky given the amount of time I wanted to spend developing.
+   I was going to write my own template/framework that I could reuse anytime I came up with the next big idea that would ultimately fail.
+*** Requirements.txt: Electric Boogaloo
+	- I want to be able to configure my server with a configuration file in a config directory that I could exclude from builds (security and configuration as deployment)
+	- I want to be able to just pull down the parent repo, fork it or whatever and have auth, database access, caching, and S3 all ready for me to start developing on the actual business logic
+	- I want to be able to have git repo functionality and have the CI/CD to deploy to the server
+	- And anything else from the [[\2][\1]] that wasn't covered here
+** Satisfying My Needs
+   First thing I decided to do was plan out the project structure to organize as I dumped out my garbage code:
+   #+BEGIN_SRC bash
+    .
+   ├──  cmd
+   │  ├──  configuration
+   ├──  config
+   ├──  controllers
+   ├──  db
+   │  ├──  migrations
+   │  ├──  queries
+   │  └──  repository
+   ├──  Dockerfile
+   ├──  docs
+   ├──  go.mod
+   ├──  go.sum
+   ├──  middlewares
+   │  └──  configs
+   ├──  models
+   │  ├──  handlers
+   │  ├──  requests
+   │  └──  responses
+   ├──  openapitools.json
+   ├──  README.md
+   ├──  services
+   ├──  sqlc.yml
+   ├──  tmp
+   │  └──  executable!
+   └──  web
+   └──  dist
+   └──  index.html
+   #+END_SRC
+   The thought process for this was that I understand how pretty much any REST framework should be structured at this point, so just getting this laid out so that I can jump in with the knowledge of how the codebase actually is laid out makes it very easy for me to pinpoint where a bug is occurring intuitively.
+
+   Next, I wanted to create a structure where my configuration could live and ensure that I could hot-swap environments as I please. So I created a small web server using [[\2][\1]] as a starting point. Here is what I started with:
+   #+BEGIN_SRC go
+   type Configuration struct {
+   Name      string `yaml:"name"`
+   Semver    string `yaml:"semver"`
+   License   string `yaml:"license"`
+   Copyright struct {
+   Year   int    `yaml:"year"`
+   Author string `yaml:"author"`
+   } `yaml:"copyright"`
+   Server struct {
+   JWT      string `yaml:"jwt"`
+   Port     int    `yaml:"port"`
+   Frontend struct {
+   Dir string `yaml:"dir"`
+   Api string `yaml:"api"`
+   } `yaml:"frontend"`
+   } `yaml:"server"`
+   Database struct {
+   URL       string `yaml:"url"`
+   Sqlc      string `yaml:"sqlc"`
+   Migration struct {
+   Protocol    string `yaml:"protocol"`
+   Destination string `yaml:"destination"`
+   } `yaml:"migration"`
+   } `yaml:"database"`
+   Cache struct {
+   URL string `yaml:"url"`
+   } `yaml:"cache"`
+   S3 struct {
+   URL    string `yaml:"url"`
+   Access string `yaml:"access"`
+   Secret string `yaml:"secret"`
+   } `yaml:"s3"`
+   }
+
+   #+END_SRC
+   You can see that I wanted to add in a way to access the data from my configuration YAML. And then I could later create commands that could be called by other parts of the built executable.
+   I then made an endpoint that would return the configuration I had created as a JSON response.
+   #+BEGIN_SRC js
+   // curl http://localhost:5000/configuration | jq '.'
+   {
+   'name': 'fullstack_app',
+   'semver': '0.0.1',
+   'server': {
+   'jwt': 'abc123',
+   'port': 5000,
+   'frontend': {
+   'dir': 'frontend/dist'
+   },
+   'database': {
+   'url': 'postgres://localhost:5432/default',
+   'sqlc': 'sql',
+   'migration': {
+   'protocol': 'postgres',
+   'destination': 'internal/migrations'
+   }
+   },
+   'cache': {
+   'url': 'redis://localhost:6379/0'
+   },
+   's3': {
+   'url': 'localhost:9000',
+   'access': 'abc123',
+   'secret': 'def456'
+   }
+   }
+   }
+   #+END_SRC
+   With that done, I was able to confirm that my Go configuration could read from the config file and operate as it was supposed to. Now I could then implement a form of an ORM with SQLC and Goose to have dead simple database migrations and model generation from table definitions.
+   So after using the [[\2][\1]] to create a command-line interface for my project, I was able to create a series of commands to develop a really nice tool for being able to do database migrations, bump versions of the server itself, and also generate Swagger documentation so I could quickly interact with my database.
+   #+BEGIN_SRC bash
+    v1.24.5 ॐ   go run main.go --help
+
+   *** Help Text
+   Serve the application.
+   The default environment used with this is development,
+   So configured the application is opend at 
+
+   http://localhost:60000
+
+   This can be altered in the 
+
+   host: 0.0.0.0
+   port: 60000
+
+   section of the config file. use -e environment when 
+   calling this command to run serve using the configured 
+   values.
+
+   *** Command 
+   **** Default 
+   --- bash
+   go build main.go -o mindscape
+   ./mindscape 
+   ---
+
+   **** with -e passed
+   If one had some configuration file really-sick-config.yaml
+   --- bash
+   go build main.go -o egg_app
+   ./egg_app -e really-sick-config
+   ---
+
+   Usage:
+   mindscape [flags]
+   mindscape [command]
+
+   Available Commands:
+   bump        Bumps the semantic version of the server
+   completion  Generate the autocompletion script for the specified shell
+   db          Database interactions
+   down         This command uses goose to run down migrations in the `int
+   ernal/migrations` folder
+   help        Help about any command
+   swag        A brief description of your command
+   version     Gets the semantic version of the server 
+
+   Flags:
+   -e, --environment string   Choose what environment that should be used 
+   when running. Default is development (default "development")
+   -h, --help                 help for mindscape
+
+   Use "mindscape [command] --help" for more information about a command.
+
+
+   #+END_SRC
+   The next thing was to get some basic authentication logic using JWT. Right now, it's pretty basic:
+   #+BEGIN_SRC go
+   /* Generated by egg v0.0.1 */
+
+   package services
+
+   import (
+   "context"
+   "fmt"
+   "time"
+
+   "github.com/adamkali/mindscape/cmd/configuration"
+   "github.com/adamkali/mindscape/db/repository"
+   "github.com/golang-jwt/jwt/v5"
+   "github.com/google/uuid"
+   "github.com/jackc/pgx/v5/pgxpool"
+   )
+
+   // CustomJwt represents a JWT token with user-specific information.
+   type CustomJwt struct {
+   UserId               uuid.UUID `json:"user_id"`
+   User				 string   `json:"user"`
+   IsAdmin              bool      `json:"is_admin"`
+   ProfilePic           string   `json:"profile_pic"`
+   jwt.RegisteredClaims `json:"claims"`
+   }
+
+   // AuthService provides authentication services, including creating and checking tokens.
+   type AuthService struct {
+   ctx    context.Context
+   conn   *pgxpool.Pool
+   config *configuration.Configuration
+   }
+
+   // newExpiration returns the current time plus 72 hours.
+   func newExpiration() time.Time {
+   return time.Now().Add(time.Hour * 72)
+   }
+
+   // jwtFromUser creates a JWT token from a user object.
+   //
+   // This function creates a new JWT token with the user's ID, profile picture URL,
+   // and an expiration time set to 72 hours in the future. The token is signed with
+   // the server's secret key.
+   func jwtFromUser(user *repository.User) *CustomJwt {
+   ProfilePicUrl := "NULL"
+   if user.ProfilePicUrl != nil { ProfilePicUrl = *user.ProfilePicUrl }
+   return &CustomJwt{
+   UserId: user.ID,
+   ProfilePic: ProfilePicUrl,
+   User: user.Username,
+   IsAdmin: user.Admin,
+   RegisteredClaims: jwt.RegisteredClaims{
+   ExpiresAt: jwt.NewNumericDate(newExpiration()),
+   IssuedAt:  jwt.NewNumericDate(time.Now()),
+   ID: user.ID.String(),
+   Subject: user.ID.String(),
+   },
+   }
+   }
+
+   // CreateAuthService creates a new instance of AuthService.
+   //
+   // This function takes the context, PostgreSQL connection, and configuration as
+   // arguments and returns a new AuthService instance.
+   func CreateAuthService(ctx context.Context, pgPool *pgxpool.Pool, config *configuration.Configuration) *AuthService {
+   return &AuthService{ctx, pgPool, config}
+   }
+
+   // Create creates a new token for a user.
+   //
+   // This function takes a user object and returns the created token as a string
+   // along with an error. If an error occurs during the creation of the token,
+   // the error is returned instead of the token.
+   func (a *AuthService) Create(user *repository.User) (*string, error) {
+   jwttoken := jwtFromUser(user)
+   tx, err := a.conn.Begin(a.ctx)
+   if err != nil {
+   return nil, err
+   }
+
+   defer tx.Rollback(a.ctx)
+   expiration := jwttoken.ExpiresAt
+
+   // Create token with claims
+   token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwttoken)
+   // Sign it with the server JWT_TOKEN
+   t, err := token.SignedString([]byte(a.config.Server.JWT))
+   if err != nil {
+   return nil, err
+   }
+
+   params := repository.CreateTokenParams{
+   UserID:             user.ID,
+   ExpirationDatetime: &expiration.Time,
+   Token:              &t,
+   }
+   repo := repository.New(tx)
+   row, err := repo.CreateToken(a.ctx, params)
+   if err != nil {
+   return nil, err
+   }
+
+   tx.Commit(a.ctx)
+   fmt.Println(row.Token)
+
+   return row.Token, nil
+   }
+
+   // CheckToken checks if a given token is valid.
+   //
+   // This function takes a token string and returns an error if the token is not
+   // found in the database. If the token is found but its expiration time has passed,
+   // an error is also returned.
+   func (a *AuthService) CheckToken(token string) error {
+   tx, err := a.conn.Begin(a.ctx)
+   if err != nil {
+   return err
+   }
+
+   defer tx.Rollback(a.ctx)
+   repo := repository.New(tx)
+   _, err = repo.FindTokenByToken(a.ctx, &token)
+   if err != nil {
+   return err
+   }
+   tx.Commit(a.ctx)
+
+
+   // check if token is expired
+   claims := &CustomJwt{}
+   _, err = jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+   return []byte(a.config.Server.JWT), nil
+   })
+   if err != nil {
+   return err
+   }
+   if claims.ExpiresAt.Before(time.Now()) {
+   return err
+   }
+   return nil
+   }
+
+   // Update updates an existing token for a user.
+   //
+   // This function takes a user object and returns the updated token as a string
+   // along with an error. If an error occurs during the update of the token,
+   // the error is returned instead of the token.
+   func (a *AuthService) Update(user repository.User) (*string, error) {
+   jwttoken := jwtFromUser(&user)
+   tx, err := a.conn.Begin(a.ctx)
+   if err != nil {
+   fmt.Printf("[ERROR] AuthService.Update{ a.conn.Begin } -> Error beginning transaction: %v", err)
+   return nil, err
+   }
+
+   defer tx.Rollback(a.ctx)
+   expiration := jwttoken.ExpiresAt
+
+   // Create token with claims
+   token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwttoken)
+   // Sign it with the server JWT_TOKEN
+   t, err := token.SignedString([]byte(a.config.Server.JWT))
+   if err != nil {
+   fmt.Printf("[ERROR] AuthService.Update{ token.SignedString } -> Error signing token: %v", err)
+   return nil, err
+   }
+
+   fmt.Printf("[INFO] AuthService.Update{ token.SignedString } -> Token: %v TokenLength: %d", t, len(t))
+   params := repository.UpdateTokenByUserIdParams{
+   UserID:             user.ID,
+   ExpirationDatetime: &expiration.Time,
+   Token:              &t,
+   }
+   repo := repository.New(tx)
+   err = repo.UpdateTokenByUserId(a.ctx, params)
+   if err != nil {
+   fmt.Printf("[ERROR] AuthService.Update{ repo.UpdateTokenByUserId } -> Error updating token: %v", err)
+   return nil, err
+   }
+   tx.Commit(a.ctx)
+   return &t, nil
+   }
+
+   #+END_SRC
+   Now you may notice that I have a function called `CreateAuthService` that takes a context, a PostgreSQL connection, and a configuration as arguments. This function creates a new instance of the `AuthService` struct so that I can use it interchangeably with another `MockAuthService` so that when I want to, it is super easy to switch the two around because they both satisfy the interface `IAuthService`. Now, why is this important? 
+   I am glad you asked. With this pattern, as long as I satisfy the `IAuthService` interface in the future, it does not really matter what is in the service—I can just switch it out. This is because in my code I can register services like so:
+   #+BEGIN_SRC go
+   type Registrar struct {
+   Config           *configuration.Configuration
+   ValidatorService *services.ValidatorService
+   UserService      services.IUserService
+   AuthService      services.IAuthService
+   MinioService     services.IMinioService
+   RedisService     services.IRedisService
+   }
+
+   type IController interface {
+   Attatch(e *echo.Echo, authMiddleware echo.MiddlewareFunc)
+   }
+
+   func createControllerParams(config *configuration.Configuration) (*Registrar, error) {
+   ctx := context.Background()
+   db, err := pgxpool.New(ctx, config.Database.URL)
+   if err != nil {
+   return nil, err
+   }
+
+   return &Registrar{
+   Config:           config,
+   ValidatorService: &services.ValidatorService{},
+   AuthService:      services.CreateAuthService(ctx, db, config), // here I register
+   UserService:      services.CreateUserService(ctx, db),
+   MinioService:     services.CreateMinioService(ctx, config),
+   RedisService:     services.CreateRedisService(ctx, config),
+   }, nil
+   }
+   #+END_SRC
+   Now I have an extremely flexible interface for being able to register whatever services I need along with a way to register controllers as well: 
+   #+BEGIN_SRC go
+   func AttatchControllers(e *echo.Echo, config *configuration.Configuration, conts ...IController) {
+   // configure middlewares here right now it is just an authentication
+   for _, v := range conts {
+   v.Attatch(e, echojwt.WithConfig(configs.AuthMiddlewareConfig(config)))
+   }
+   }
+   #+END_SRC
+   Where all I really need to do in order to create a new controller is implement the Attach function for the controller. Here is how I implemented it for my user_controller: 
+   #+BEGIN_SRC go
+   // ./controllers/user_controller.go
+   func BuildUserController(p *Registrar) UserController {
+   return UserController{
+   Name:             "/users",
+   Config:           p.Config,
+   AuthService:      p.AuthService,
+   MinioService:     p.MinioService,
+   UserService:      p.UserService,
+   RedisService:     p.RedisService,
+   ValidatorService: p.ValidatorService,
+   }
+   }
+   // ./controllers/routes.go
+   AttatchControllers(e, config, BuildUserController(params))
+   #+END_SRC
+   Now that I have accomplished this, it is now extremely easy to add whatever service to the server as needed.
+   And now that I have an easy way to build a web server, I added in some CI/CD and confirmed that GitHub would pick up the server, build the Docker container, and then deploy it to GitLab.
+   Which pretty much leaves me with job complete.
+   But that is not the end of the story. Because if I already had all of this composability, and I am already making this into a "template" app along with the rest of the tech stack as well..., so why not make a full-fledged framework for myself?
+* Egg
+  Introducing my own backend framework for Go: [[\2][\1]]. But this isn't just another "opinionated framework". It is a CLI that embodies my philosophy of convention over configuration. 
+  
+  Here's what I actually built: a Cobra-based CLI with a Bubbletea TUI wizard that generates complete Go web applications from 40+ embedded templates. When you run `egg_cli init`, you get a beautiful interactive terminal interface that walks you through project setup—database choice, authentication, frontend framework, the works. It's like having a conversation with your computer about what you want to build.
+  
+  The magic happens through a pluggable module system with seven different modules (`egg::initialize`, `egg::bootstrap_directories`, `egg::generate_configuration`, etc.) that handle everything from directory structure to CI/CD pipeline generation. Each module implements the `IModule` interface, making the whole system extensible and testable.
+  
+  But the real kicker? Convention over configuration taken to its logical extreme. Instead of spending hours setting up the same boilerplate every time I have a brilliant 11 PM idea, I run one command and get a complete project with:
+  - REST API controllers with Echo routing
+  - Type-safe database queries with SQLC
+  - Database migrations with Goose
+  - JWT authentication services with interfaces for easy testing
+  - Redis caching integration
+  - S3/MinIO storage services
+  - Docker setup for deployment
+  - Swagger documentation generation
+  - Complete CI/CD pipeline for GitHub Actions
+  
+  And it's not just generation—the CLI includes development utilities too. Need to convert your config to a `.env` file? `egg_cli generate dotenv`. Want to generate config from environment variables? `egg_cli env`. Need to bump versions? The generated project includes its own CLI with database migration commands, version management, and Swagger generation.
+** What Really Made Me Happy
+   The velocity is intoxicating. I can go from idea to working API with authentication, database, and deployment pipeline in under 10 minutes. When I built my current project Mindscape using Egg, the development experience was exactly what I wanted: I spent my time on business logic, not fighting with boilerplate.
+   The framework generated a clean project structure that followed my mental model from .NET development—services with interfaces, proper dependency injection, organized controllers—but in Go's fast, simple ecosystem. When I needed to add a new feature, I wasn't hunting through documentation or trying to remember how I set up JWT middleware last time. It was already there, already working, already tested.
+   Want to swap Auth0 or AWS Cognito? Just implement the `IAuthService` interface and update the dependency injection. Want to add a new storage provider? Implement `IMinioService` and plug it in. The interfaces make everything swappable without touching the business logic.
+    Every Egg project comes with its own command-line tool for database migrations (`go run main.go db migrate`), version bumping (`go run main.go bump minor`), and Swagger doc generation (`go run main.go swag`). No more googling "how do I run migrations in this project"—it's all right there in the help text.
+* Conclusion 
+  At the end of this nearly year-long journey, I'm genuinely proud of what I built. Not because Egg is revolutionary—it's not. But because I actually finished a personal project that solves my specific problems, and I'm using it every day for real work.
+  
+  The learning was deeper than I expected. Building dependency injection from scratch in Go gave me an intimate understanding of the pattern that transcends any single language. Now when I look at .NET's DI container at work, or Spring's in Java, or any other framework's approach, I understand not just *what* they're doing but *why* they made those specific design decisions. There's something powerful about implementing a concept yourself that no amount of documentation can teach you.
+  
+  But what makes me happiest is this: I built something for myself, exactly how I wanted it to work. When I start my next project—a bookmark manager*\1*dashboard for home servers—I won't spend a weekend setting up auth and database connections and Docker configs. I'll run `egg_cli init`, answer some questions in a nice TUI, and be writing business logic in 10 minutes.
+  
+  That's the real victory. Not building the next Rails or Django, but building the tool that lets me ship ideas faster. Sometimes reinventing the wheel is exactly the right choice, especially when you need a wheel that fits your cart perfectly.
+
+** Should You Use Egg?
+   Probably not, and that's perfectly fine. Egg was built to solve my specific workflow problems and embody my preferences about how web development should feel. If you love spending time configuring build systems and you think magic is better than explicit interfaces, we disagree on fundamentals and that's okay.
+   
+   But if you're tired of rewriting the same authentication boilerplate, if you want convention over configuration without giving up control, if you believe development velocity matters more than using the "approved" tools—then maybe we're kindred spirits. Give it a try, and if you like how I think about these problems, drop a star on the repo.  
+** Thanks for Reading
+   I want to give a huge shout out:
+   - Sierra LaRosa the love of my life.
+   - My parents for the support they have given me and Sierra. 
+   - eFileMadeEasy for all the resources i have had to learn from.
+   - The immense amount of resources from the Golang community.
+   -- [[\2][\1]]
+   -- [[\2][\1]]
+   -- [[\2][\1]]
+   -- [[\2][\1]]
+   - [[\2][\1]] for lots of the inspiration and motivation.
+   - [[\2][\1]] for the inspiration to make this project.
+   - Andho from discord for allowing him to spam him in discord.
+   - [[\2][\1]] for lots of moral support and allowing me to learn some Go tips from him.
+   
+   ===
+See you around!
+Adam Kalinowski
+
+
